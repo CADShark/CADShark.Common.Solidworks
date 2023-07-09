@@ -1,4 +1,4 @@
-﻿namespace CADShark.Common.Solidworks
+﻿namespace CADShark.SolidWorks.AddIn
 {
     internal class ConstatnProps
     {
@@ -7,8 +7,8 @@
         public const string attributeName = "Наименование";
 
         public const string attributeCodeForDoc = "Код документа";
-        
+
         public const string attributeTypeForDoc = "Тип документа";
-        
+
     }
 }

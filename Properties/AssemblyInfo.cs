@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CADShark.Common.Solidworks")]
+[assembly: AssemblyTitle("CADShark.Common.SolidWorks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CADShark.Common.Solidworks")]
+[assembly: AssemblyProduct("CADShark.Common.SolidWorks")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("740587d6-aea4-4385-92f1-a92ab6f62148")]
+[assembly: Guid("ec7f933e-5000-43ba-acfe-7260e0ef7226")]
 
 // Version information for an assembly consists of the following four values:
 //

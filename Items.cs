@@ -1,25 +1,18 @@
-﻿using CADBooster.SolidDna;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using CADBooster.SolidDna;
+using CADShark.Common.Logging;
+using CADShark.Common.SolidWorks.Errors;
+using CADShark.Kernel;
+using CADShark.SolidWorks.AddIn.Assemblies;
+using CADShark.SolidWorks.AddIn.Models;
 using SolidWorks.Interop.sldworks;
 
-namespace CADShark.Common.Solidworks
+namespace CADShark.SolidWorks.AddIn
 {
-    public class Items
+    public static class Items
     {
-        #region Default constructor
-        static Items()
-        {
-            if (!AddInIntegration.ConnectToActiveSolidWorksForStandAlone())
-            {
-                const string message = "Failed to connect to SolidWorks";
-                //CadLogger.Error(message);
-                //throw new ConnectionException(message);
-            }
-            SwApp = SolidWorksEnvironment.Application;
-        }
-        #endregion
-
         #region Private properties
         private static readonly SolidWorksApplication SwApp;
         private static string typeForDoc = null;
@@ -27,11 +20,25 @@ namespace CADShark.Common.Solidworks
         private static string objectGuid = null;
         #endregion
 
+        #region Default constructor
+        static Items()
+        {
+            if (!AddInIntegration.ConnectToActiveSolidWorksForStandAlone())
+            {
+                const string message = "Failed to connect to SolidWorks";
+                CadLogger.Error(message);
+                throw new ConnectionException(message);
+            }
+            SwApp = SolidWorksEnvironment.Application;
+        }
+        #endregion
+
         #region Public Prpoperties
         public static string AddDocument => GetDocumentType();
         #endregion
 
         #region Public Methods
+
         public static Dictionary<string, string> DocumentProps()
         {
             var swApp = SwApp.ActiveModel;
@@ -69,6 +76,7 @@ namespace CADShark.Common.Solidworks
 
 
         }
+
         #endregion
 
         #region Private Methods
@@ -114,29 +122,27 @@ namespace CADShark.Common.Solidworks
             return objectGuid;
 
         }
+        private static ObjectTypes CheckWhatTypeisModel(string type)
+        {
+            switch (type)
+            {
+                case @"Детали":
+                case @"Деталі":
+                    return ObjectTypes.Part;
 
-        //private static ObjectTypes CheckWhatTypeisModel(string type)
-        //{
-        //    switch (type)
-        //    {
-        //        case @"Детали":
-        //        case @"Деталі":
-        //            return ObjectTypes.Part;
+                case @"Сборочные единицы":
+                case @"Складальні одиниці":
+                    return ObjectTypes.Assembly;
 
-        //        case @"Сборочные единицы":
-        //        case @"Складальні одиниці":
-        //            return ObjectTypes.Assembly;
+                case @"Стандартные изделия":
+                    return ObjectTypes.StandardProd;
 
-        //        case @"Стандартные изделия":
-        //            return ObjectTypes.StandardProd;
-
-        //        case @"Прочие изделия":
-        //            return ObjectTypes.OtherProducts;
-        //        default:
-        //            return ObjectTypes.None;
-        //    }
-        //}
-
+                case @"Прочие изделия":
+                    return ObjectTypes.OtherProducts;
+                default:
+                    return ObjectTypes.None;
+            }
+        }
         private static Dictionary<string, string> ConfiguretionPropsDic()
         {
             var configuretionPropsDic = new Dictionary<string, string>
@@ -172,5 +178,174 @@ namespace CADShark.Common.Solidworks
             return swModel;
         }
         #endregion
+
+        #region Tresh
+
+        private static List<PropertyModel> CreateItem()
+        {
+            var propertyModelList = new List<PropertyModel>();
+
+            var configNames = SwApp.ActiveModel.ConfigurationNames;
+
+            foreach (var configName in configNames)
+            {
+                var number = SwApp.ActiveModel.GetCustomProperty(@"Обозначение", configName, true);
+                var description = SwApp.ActiveModel.GetCustomProperty(@"Наименование", configName, true);
+                var section = SwApp.ActiveModel.GetCustomProperty(@"Раздел", configName, true);
+
+                var propertyData = new PropertyModel
+                {
+                    Number = number,
+                    Description = description,
+                    ObjectType = CheckWhatTypeisModel(section),
+                    ConfigName = configName
+                };
+                propertyModelList.Add(propertyData);
+            }
+
+            return propertyModelList;
+        }
+
+
+
+
+
+
+
+        private static Dictionary<string, string> CustomPropsDic()
+        {
+            var customPropsDic = new Dictionary<string, string>
+            {
+                //{SystemGUIDs.attributeDesignation, "Разработал"},
+                //{SystemGUIDs.attributeDesignation, "Проверил" },
+                //{SystemGUIDs.attributeDesignation, "Техконтроль"},
+                //{SystemGUIDs.attributeDesignation, "Н.контр."},
+                //{SystemGUIDs.attributeDesignation, "Нач.отд."},
+                //{SystemGUIDs.attributeDesignation, "Утвердил"},
+                //{ "Перв.примен", SystemGUIDs.attributeDesignation, },
+                //{ "Справ.N", SystemGUIDs.attributeDesignation, },
+                //{ "Инв.N подл", SystemGUIDs.attributeDesignation, },
+                //{ "Подп. и дата 1", SystemGUIDs.attributeDesignation, },
+                //{ "Взам. инв.N", SystemGUIDs.attributeDesignation, },
+                //{ "Инв. N дубл.", SystemGUIDs.attributeDesignation, },
+                //{ "Подп. и дата 2", SystemGUIDs.attributeDesignation, },
+                //{ "Подразделение", SystemGUIDs.attributeDesignation, },
+                //{ "MassaFormat", SystemGUIDs.attributeDesignation, },
+                //{ "ФОРМАТ", SystemGUIDs.attributeDesignation, },
+                //{ "ЛИСТОВ", SystemGUIDs.attributeDesignation, },
+                //{ "КОЛИЧЕСТВО ФОРМАТОВ A3", SystemGUIDs.attributeDesignation, },
+                //{SystemGUIDs.attributeDesignation, "Код документа" },
+                //{ SystemGUIDs.attributeDesignation, "Тип документа"}
+            };
+
+            return customPropsDic;
+        }
+
+        private static Dictionary<string, string> DocumentProps1()
+        {
+            string valueDesignation;
+            var swapp = SwApp.ActiveModel;
+
+            if (swapp.IsDrawing) swapp = DrawingItem();
+
+
+            string filePath = swapp.FilePath;
+            string fileName = swapp.UnsafeObject.GetTitle();
+
+            var activConfigurationName = swapp.ActiveConfiguration.Name;
+
+            var editor = swapp.Extension.CustomPropertyEditor(activConfigurationName);
+            var status = editor.CustomPropertyExists(ConstatnProps.attributeDesignation);
+            if (status)
+            {
+                valueDesignation = editor.GetCustomProperty(ConstatnProps.attributeDesignation, true);
+            }
+            else
+            {
+                valueDesignation = fileName;
+                editor.SetCustomProperty(ConstatnProps.attributeDesignation, valueDesignation);
+            }
+
+            var valueName = swapp.GetCustomProperty(ConstatnProps.attributeName, null, true);
+
+
+            var propertyModelList = new Dictionary<string, string>
+            {
+                {SystemGUIDs.attributeDesignation, valueDesignation},
+                {SystemGUIDs.attributeName, valueName},
+                {SystemGUIDs.attributeFile, filePath}
+            };
+
+
+            return propertyModelList;
+        }
+
+
+
+
+
+
+
+
+        private static void SuppressUpdates()
+        {
+            ModelView myModelView = null;
+
+            var swDraw = SwApp.ActiveModel.AsDrawing();
+        }
+        private static List<PropertyModel> GetComponents()
+        {
+            var componentsList = new List<PropertyModel>();
+
+            var model = SwApp.ActiveModel;
+            var assembly = model.AsAssembly();
+
+            foreach (var component in AssemblyHelpers.GetComponents(assembly, false))
+            {
+                var comp = component.AsModel;
+                var config = component.ConfigurationName;
+
+                if (component.IsSuppressed)
+                    continue;
+
+                var number = comp.GetCustomProperty(@"Обозначение", config, true);
+                var description = comp.GetCustomProperty(@"Наименование", config, true);
+                if (string.IsNullOrEmpty(description))
+                {
+                    description = comp.GetCustomProperty(@"Наименование", null, true);
+                }
+
+                var section = comp.GetCustomProperty(@"Раздел", config, true);
+
+                var componentData = new PropertyModel
+                {
+                    Number = number,
+                    Description = description,
+                    ObjectType = CheckWhatTypeisModel(section),
+                    ConfigName = config,
+                    FilePath = component.FilePath
+                };
+                componentsList.Add(componentData);
+            }
+            var groupedComponents = componentsList
+                .GroupBy(c => new { c.FilePath, c.ConfigName })
+                .Select(g => new PropertyModel
+                {
+                    Number = g.First().Number,
+                    Description = g.First().Description,
+                    ObjectType = g.First().ObjectType,
+                    ConfigName = g.Key.ConfigName,
+                    FilePath = g.Key.FilePath,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return groupedComponents;
+        }
+
+        #endregion
+
+
+
     }
 }

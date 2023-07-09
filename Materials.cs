@@ -3,7 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 
-namespace CADShark.Common.Solidworks
+namespace CADShark.Common.SolidWorks
 {
     public class Materials
     {
@@ -65,7 +65,7 @@ namespace CADShark.Common.Solidworks
             get { return ppath; }
             set { ppath = value; IsDirty = true; }
         }
-    
+
         public string rgb
         {
             get { return rrgb; }
@@ -109,8 +109,8 @@ namespace CADShark.Common.Solidworks
 
                 allofmaterials.Add(m);
                 allMaterialsUnchangeble.Add(m.MemberwiseClone() as Materials);  //клонирование копирует все свойства, но обьекты 
-                                            
-                                                                                //остаются разными. Изменения в одном не затрвгивают другой, его копию
+
+                //остаются разными. Изменения в одном не затрвгивают другой, его копию
 
             }
         }
@@ -162,7 +162,7 @@ namespace CADShark.Common.Solidworks
                 return true;
 
             return false;
-        
+
         }
 
         public static string WhichParametrsHasChanged(Materials m1, Materials m2)
@@ -224,18 +224,18 @@ namespace CADShark.Common.Solidworks
             tt.Columns.Add("Значение");
 
 
-            PropertyInfo [] allProps = m.GetType().GetProperties();
-            
+            PropertyInfo[] allProps = m.GetType().GetProperties();
+
             foreach (PropertyInfo item in allProps)
             {
                 if (item.Name != "IsDirty")
                 {
                     object t = item.GetValue(m);
-                    if(t != null)
+                    if (t != null)
                         t = t?.ToString();
 
-                    tt.Rows.Add(item.Name, t );
-                   
+                    tt.Rows.Add(item.Name, t);
+
                 }
             }
 
