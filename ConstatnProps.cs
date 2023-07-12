@@ -1,4 +1,4 @@
-﻿namespace CADShark.SolidWorks.AddIn
+﻿namespace CADShark.Common.SolidWorks
 {
     internal class ConstatnProps
     {

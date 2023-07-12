@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace CADShark.SolidWorks.AddIn
+namespace CADShark.Common.SolidWorks
 {
     public enum ObjectTypes
     {

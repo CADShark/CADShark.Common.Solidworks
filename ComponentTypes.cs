@@ -1,6 +1,6 @@
 ﻿using SolidWorks.Interop.swconst;
 
-namespace CADShark.SolidWorks.AddIn
+namespace CADShark.Common.SolidWorks
 {
     /// <summary>
     /// Types of a component.

@@ -33,13 +33,14 @@ namespace CADShark.Common.SolidWorks
             SolidWorksEnvironment.Application.UnsafeObject.DocumentVisible(visible, (int)swDocType);
         }
 
-        public static void GetProperties(string path)
+        public static string GetProperties(string path, string propName)
         {
-            //var model = Sld.OpenDoc6(path, (int)swDocumentTypes_e.swDocPART, (int)swOpenDocOptions_e.swOpenDocOptions_Silent, "", ref errors, ref warning);
-            //if (model == null) return;
+            SetVisibilityDocument(false, ComponentTypes.Part);
+            SolidWorksEnvironment.Application.OpenFile(path);
+            propName = SolidWorksEnvironment.Application.ActiveModel.GetCustomProperty(propName, null, true);
 
-            //var mg = model.Extension.CustomPropertyManager[model.ConfigurationManager.ActiveConfiguration.Name];
-            //mg.Get6(item, false, out valOut, out valResoult, out wasResolt, out linkTo);
+            SetVisibilityDocument(true, ComponentTypes.Part);
+            return propName;
         }
     }
 }

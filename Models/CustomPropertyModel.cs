@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CADShark.SolidWorks.AddIn.Models
+namespace CADShark.Common.SolidWorks.Models
 {
     internal class CustomPropertyModel
     {

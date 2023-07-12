@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using CADBooster.SolidDna;
 using CADShark.Common.Logging;
+using CADShark.Common.SolidWorks.Assemblies;
 using CADShark.Common.SolidWorks.Errors;
+using CADShark.Common.SolidWorks.Models;
 using CADShark.Kernel;
-using CADShark.SolidWorks.AddIn.Assemblies;
-using CADShark.SolidWorks.AddIn.Models;
 using SolidWorks.Interop.sldworks;
 
-namespace CADShark.SolidWorks.AddIn
+namespace CADShark.Common.SolidWorks
 {
     public static class Items
     {
@@ -34,7 +34,7 @@ namespace CADShark.SolidWorks.AddIn
         #endregion
 
         #region Public Prpoperties
-        public static string AddDocument => GetDocumentType();
+        public static string GetDocumentTypeGuid => GetDocumentType();
         #endregion
 
         #region Public Methods

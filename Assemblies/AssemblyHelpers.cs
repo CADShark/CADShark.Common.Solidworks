@@ -6,7 +6,7 @@ using CADShark.Common.Logging;
 using CADShark.Common.SolidWorks.Errors;
 using SolidWorks.Interop.sldworks;
 
-namespace CADShark.SolidWorks.AddIn.Assemblies
+namespace CADShark.Common.SolidWorks.Assemblies
 {
     internal class AssemblyHelpers
     {

@@ -1,4 +1,4 @@
-﻿namespace CADShark.SolidWorks.AddIn.Models
+﻿namespace CADShark.Common.SolidWorks.Models
 {
     public class PropertyModel
     {
