@@ -45,20 +45,12 @@
       <HintPath>..\References\2023\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="SolidWorks.Interop.sw3dprinter">
-      <HintPath>..\References\2023\SolidWorks.Interop.sw3dprinter.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="SolidWorks.Interop.swcommands">
       <HintPath>..\References\2023\SolidWorks.Interop.swcommands.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst">
       <HintPath>..\References\2023\SolidWorks.Interop.swconst.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="SolidWorks.Interop.swdimxpert">
-      <HintPath>..\References\2023\SolidWorks.Interop.swdimxpert.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swdocumentmgr">
@@ -71,10 +63,6 @@
     </Reference>
     <Reference Include="SolidWorks.Interop.swpublished">
       <HintPath>..\References\2023\SolidWorks.Interop.swpublished.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="SolidWorks.Interop.SWRoutingLib">
-      <HintPath>..\References\2023\SolidWorks.Interop.SWRoutingLib.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="solidworkstools">
@@ -91,9 +79,10 @@
     <Compile Include="AssemblyDocument.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Extension.cs" />
-    <Compile Include="Core\ISolidWorksInstanceManager.cs" />
-    <Compile Include="Core\SolidWorksInstanceManager.cs" />
+    <Compile Include="Core\ISldWorksInstManager.cs" />
+    <Compile Include="Core\SldWorksInstManager.cs" />
     <Compile Include="Core\YearE.cs" />
+    <Compile Include="IAssemblyDocument.cs" />
     <Compile Include="ObjectTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

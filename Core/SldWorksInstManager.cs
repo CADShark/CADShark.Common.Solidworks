@@ -7,7 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace CADShark.Common.SolidWorks.Core
 {
-    public partial class SolidWorksInstanceManager : ISolidWorksInstanceManager
+    public class SldWorksInstManager : ISldWorksInstManager
     {
         public const string startSWNoJournalDialogAndSuppressAllDialogs = "/r /b";
 
@@ -23,7 +23,7 @@ namespace CADShark.Common.SolidWorks.Core
         /// <returns>
         /// Return SOLIDWORKS instance.
         /// </returns>
-        public SldWorks GetSolidworksInstanceFromProcessId()
+        public SldWorks GetSOLIDWORKSInstanceFromProcessID()
         {
             var pid = Process.GetProcessesByName("SLDWORKS").First().Id;
             var numFetched = IntPtr.Zero;
@@ -102,7 +102,6 @@ namespace CADShark.Common.SolidWorks.Core
                 }
                 catch (TimeoutException e)
                 {
-
                 }
             }
         }
@@ -115,11 +114,6 @@ namespace CADShark.Common.SolidWorks.Core
         {
             if (swApp != null)
                 Marshal.ReleaseComObject(swApp);
-        }
-
-        public SldWorks GetSOLIDWORKSInstanceFromProcessID()
-        {
-            throw new NotImplementedException();
         }
     }
 }

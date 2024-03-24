@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace CADShark.Common.SolidWorks
 {
-    public class AssemblyDocument
+    public class AssemblyDocument : IAssemblyDocument
     {
         private readonly SldWorks _swApp;
         private ModelDoc2 _swModel;
@@ -31,7 +31,8 @@ namespace CADShark.Common.SolidWorks
 
         public ModelDoc2 ActivateDoc(string filePath)
         {
-            _swModel = (ModelDoc2)_swApp.ActivateDoc3(filePath, false, (int)swRebuildOnActivation_e.swUserDecision, ref _errors);
+            _swModel = (ModelDoc2)_swApp.ActivateDoc3(filePath, false, (int)swRebuildOnActivation_e.swUserDecision,
+                ref _errors);
             return _swModel;
         }
 
@@ -65,7 +66,6 @@ namespace CADShark.Common.SolidWorks
 
         public Dictionary<string, Component2> GetDistinctPartComponents(ref object[] vComponents)
         {
-
             var swModel = (ModelDoc2)_swApp.ActiveDoc;
 
             if (swModel.GetType() != (int)swDocumentTypes_e.swDocASSEMBLY) return null;
@@ -84,7 +84,7 @@ namespace CADShark.Common.SolidWorks
                 if (swModel.GetType() != (int)swDocumentTypes_e.swDocPART) continue;
 
                 var pathName = component.GetPathName();
-                
+
                 if (!groupedComponents.ContainsKey(pathName))
                 {
                     groupedComponents[pathName] = component;
@@ -173,7 +173,7 @@ namespace CADShark.Common.SolidWorks
         public void SuppressUpdates(bool enable)
         {
             _swModel = (ModelDoc2)_swApp.ActiveDoc;
-            
+
             var swView = (ModelView)_swModel.ActiveView;
             swView.EnableGraphicsUpdate = enable;
             _swModel.FeatureManager.EnableFeatureTree = enable;

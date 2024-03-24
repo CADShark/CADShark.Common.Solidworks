@@ -2,7 +2,7 @@
 
 namespace CADShark.Common.SolidWorks.Core
 {
-    public interface ISolidWorksInstanceManager
+    public interface ISldWorksInstManager
     {
         SldWorks GetSOLIDWORKSInstanceFromProcessID();
 
@@ -14,7 +14,7 @@ namespace CADShark.Common.SolidWorks.Core
         /// <param name="_year">Year version of SOLIDWORKS.</param>
         /// <returns>Pointer to the SOLIDWORKS application.</returns>
         SldWorks GetNewInstance(
-            string commandLineParameters = SolidWorksInstanceManager.startSWNoJournalDialogAndSuppressAllDialogs,
+            string commandLineParameters = SldWorksInstManager.startSWNoJournalDialogAndSuppressAllDialogs,
             YearE _year = YearE.Latest, int timeout = 30);
 
 
@@ -29,7 +29,7 @@ namespace CADShark.Common.SolidWorks.Core
         /// <param name="timeout">Timeout in seconds.</param>
         /// <param name="attempts">Number of attempts</param>
         void RestartInstance(ref SldWorks swApp,
-            string commandLineParameters = SolidWorksInstanceManager.startSWNoJournalDialogAndSuppressAllDialogs,
+            string commandLineParameters = SldWorksInstManager.startSWNoJournalDialogAndSuppressAllDialogs,
             YearE _year = YearE.Latest, int timeout = 30, int attempts = 5);
     }
 }
