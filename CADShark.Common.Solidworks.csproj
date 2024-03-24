@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,128 +30,83 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>StrongKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CADBooster.SolidDna, Version=2.7.0.0, Culture=neutral, PublicKeyToken=f23bab2866e226c4, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\CADBooster.SolidDna.2.7.0\lib\net48\CADBooster.SolidDna.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="SolidWorks.Interop.sldworks">
-      <HintPath>References\SolidWorks.Interop.sldworks.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.sw3dprinter">
-      <HintPath>References\SolidWorks.Interop.sw3dprinter.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.sw3dprinter.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swcommands">
-      <HintPath>References\SolidWorks.Interop.swcommands.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swcommands.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst">
-      <HintPath>References\SolidWorks.Interop.swconst.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swconst.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swdimxpert">
-      <HintPath>References\SolidWorks.Interop.swdimxpert.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swdimxpert.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swdocumentmgr">
-      <HintPath>References\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swdocumentmgr.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swmotionstudy">
-      <HintPath>References\SolidWorks.Interop.swmotionstudy.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swmotionstudy.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swpublished">
-      <HintPath>References\SolidWorks.Interop.swpublished.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.swpublished.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.SWRoutingLib">
-      <HintPath>References\SolidWorks.Interop.SWRoutingLib.dll</HintPath>
+      <HintPath>..\References\2023\SolidWorks.Interop.SWRoutingLib.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="solidworkstools">
+      <HintPath>..\References\2023\solidworkstools.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\CADShark.OpenManage\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assemblies\AssemblyHelpers.cs" />
-    <Compile Include="ComponentTypes.cs" />
-    <Compile Include="ConstatnProps.cs" />
-    <Compile Include="Errors\Exception.cs" />
-    <Compile Include="Items.cs" />
-    <Compile Include="MatApplience.cs" />
-    <Compile Include="Materials.cs" />
-    <Compile Include="Models\CustomPropertyModel.cs" />
-    <Compile Include="Models\PropertyModel.cs" />
+    <Compile Include="Documents\DocumentType.cs" />
+    <Compile Include="Documents\OpenDocumentOptions.cs" />
+    <Compile Include="AssemblyDocument.cs" />
+    <Compile Include="Core\Enums.cs" />
+    <Compile Include="Core\Extension.cs" />
+    <Compile Include="Core\ISolidWorksInstanceManager.cs" />
+    <Compile Include="Core\SolidWorksInstanceManager.cs" />
+    <Compile Include="Core\YearE.cs" />
     <Compile Include="ObjectTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoliDOperations.cs" />
-    <Compile Include="SplitConfig\SplitConfig.cs" />
-    <Compile Include="SplitConfig\SplitConfigExtraLeyer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\CADShark.OpenManage\CADShark.Common.Analytics\CADShark.Common.Analytics.csproj">
-      <Project>{dec27a2c-7074-4e7b-8c08-bac91f82ec0e}</Project>
-      <Name>CADShark.Common.Analytics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CADShark.OpenManage\CADShark.Common.Logging\CADShark.Common.Logging.csproj">
-      <Project>{d02c8bce-c05a-4648-aaf7-8dd96fcae198}</Project>
-      <Name>CADShark.Common.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CADShark.OpenManage\CADShark.Kernel\CADShark.Kernel.csproj">
-      <Project>{2ba0e23b-c7e0-4f06-a6ea-2e089bd20db8}</Project>
-      <Name>CADShark.Kernel</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="StrongKey.pfx" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CADShark.Common.Logging\CADShark.Common.Logging.csproj">
+      <Project>{d02c8bce-c05a-4648-aaf7-8dd96fcae198}</Project>
+      <Name>CADShark.Common.Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
