@@ -4,18 +4,18 @@ namespace CADShark.Common.SolidWorks.Core
 {
     public interface ISldWorksInstManager
     {
-        SldWorks GetSOLIDWORKSInstanceFromProcessID();
+        SldWorks GetSolidworksInstanceFromProcessId();
 
         /// <summary>
         /// Gets a new instance.
         /// </summary>
-        /// <param name="commandlineArgs">commandline args on how to start SOLIDWORSKS. For a full list of arguments, please see this <see href="https://www.cadoverflow.com/t/solidworks-command-line-arguments/279">thread</see>.</param>
-        /// <param name="timeoutInSeconds">The timeout in seconds.</param>
-        /// <param name="_year">Year version of SOLIDWORKS.</param>
+        /// <param name="commandLineParameters"></param>
+        /// <param name="year">Year version of SOLIDWORKS.</param>
+        /// <param name="timeout"></param>
         /// <returns>Pointer to the SOLIDWORKS application.</returns>
         SldWorks GetNewInstance(
-            string commandLineParameters = SldWorksInstManager.startSWNoJournalDialogAndSuppressAllDialogs,
-            YearE _year = YearE.Latest, int timeout = 30);
+            string commandLineParameters = SldWorksInstManager.StartSwNoJournalDialogAndSuppressAllDialogs,
+            YearE year = YearE.Latest, int timeout = 30);
 
 
         void ReleaseInstance(SldWorks swApp);
@@ -25,11 +25,11 @@ namespace CADShark.Common.SolidWorks.Core
         /// </summary>
         /// <param name="swApp">Reference to the SOLIDWORKS application.</param>
         /// <param name="commandLineParameters">Command line params.</param>
-        /// <param name="_year">Year. Default is latest.</param>
+        /// <param name="year">Year. Default is latest.</param>
         /// <param name="timeout">Timeout in seconds.</param>
         /// <param name="attempts">Number of attempts</param>
         void RestartInstance(ref SldWorks swApp,
-            string commandLineParameters = SldWorksInstManager.startSWNoJournalDialogAndSuppressAllDialogs,
-            YearE _year = YearE.Latest, int timeout = 30, int attempts = 5);
+            string commandLineParameters = SldWorksInstManager.StartSwNoJournalDialogAndSuppressAllDialogs,
+            YearE year = YearE.Latest, int timeout = 30, int attempts = 5);
     }
 }

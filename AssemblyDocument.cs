@@ -81,7 +81,7 @@ namespace CADShark.Common.SolidWorks
             {
                 if (component.GetSuppression2() == (int)swComponentSuppressionState_e.swComponentSuppressed) continue;
                 swModel = (ModelDoc2)component.GetModelDoc2();
-                if (swModel.GetType() != (int)swDocumentTypes_e.swDocPART) continue;
+                if (swModel?.GetType() != (int)swDocumentTypes_e.swDocPART) continue;
 
                 var pathName = component.GetPathName();
 

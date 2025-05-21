@@ -38,7 +38,8 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>StrongKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -51,12 +52,8 @@
       <HintPath>..\References\2023\SolidWorks.Interop.swconst.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="solidworkstools">
-      <HintPath>..\References\2023\solidworkstools.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -71,10 +68,6 @@
     <Compile Include="IAssemblyDocument.cs" />
     <Compile Include="ObjectTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="StrongKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CADShark.Common.Logging\CADShark.Common.Logging.csproj">

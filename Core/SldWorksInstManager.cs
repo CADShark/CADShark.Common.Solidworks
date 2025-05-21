@@ -9,7 +9,7 @@ namespace CADShark.Common.SolidWorks.Core
 {
     public class SldWorksInstManager : ISldWorksInstManager
     {
-        public const string startSWNoJournalDialogAndSuppressAllDialogs = "/r /b";
+        public const string StartSwNoJournalDialogAndSuppressAllDialogs = "/r /b";
 
         [DllImport("ole32.dll")]
         public static extern int GetRunningObjectTable(int reserved, out IRunningObjectTable port);
@@ -23,7 +23,7 @@ namespace CADShark.Common.SolidWorks.Core
         /// <returns>
         /// Return SOLIDWORKS instance.
         /// </returns>
-        public SldWorks GetSOLIDWORKSInstanceFromProcessID()
+        public SldWorks GetSolidworksInstanceFromProcessId()
         {
             var pid = Process.GetProcessesByName("SLDWORKS").First().Id;
             var numFetched = IntPtr.Zero;
@@ -45,9 +45,8 @@ namespace CADShark.Common.SolidWorks.Core
                 runningObjectTable.GetObject(monikers[0], out var runningObjectVal);
 
                 // we should be safe to cast to our "real" solidworks object
-                var swObj = runningObjectVal as SldWorks;
 
-                if (swObj != null && swObj.GetProcessID() == pid)
+                if (runningObjectVal is SldWorks swObj && swObj.GetProcessID() == pid)
                 {
                     return swObj;
                 }
@@ -59,12 +58,11 @@ namespace CADShark.Common.SolidWorks.Core
         /// <summary>
         ///  Creates a new instance of SOLIDWORKS
         /// </summary>
-        /// <param name="suppressDialog">Suppress any dialogs.</param>
         /// <param name="commandlineParameters"></param>
         /// <param name="year"></param>
         /// <param name="timeout">30 seconds for time out.</param>
         /// <returns></returns>
-        public SldWorks GetNewInstance(string commandlineParameters = startSWNoJournalDialogAndSuppressAllDialogs,
+        public SldWorks GetNewInstance(string commandlineParameters = StartSwNoJournalDialogAndSuppressAllDialogs,
             YearE year = YearE.Latest, int timeout = 30)
         {
             var swApp = Extension.CreateSldWorks(commandlineParameters, year, timeout);
@@ -76,10 +74,10 @@ namespace CADShark.Common.SolidWorks.Core
         /// </summary>
         /// <param name="swApp"></param>
         /// <param name="commandLineParameters"></param>
-        /// <param name="year_"></param>
+        /// <param name="year"></param>
         /// <param name="timeout"></param>
         /// <param name="attempts"></param>
-        public void RestartInstance(ref SldWorks swApp, string commandLineParameters = "", YearE year_ = YearE.Latest,
+        public void RestartInstance(ref SldWorks swApp, string commandLineParameters = "", YearE year = YearE.Latest,
             int timeout = 30, int attempts = 5)
         {
             if (attempts <= 2)
@@ -96,12 +94,13 @@ namespace CADShark.Common.SolidWorks.Core
             {
                 try
                 {
-                    swApp = GetNewInstance(commandLineParameters, year_, timeout);
+                    swApp = GetNewInstance(commandLineParameters, year, timeout);
                     if (swApp != null)
                         break;
                 }
                 catch (TimeoutException e)
                 {
+                    Console.WriteLine(e.Message);
                 }
             }
         }
