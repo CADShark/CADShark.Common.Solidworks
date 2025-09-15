@@ -6,32 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace CADShark.Common.SolidWorks
 {
-    public class AssemblyDocument : IAssemblyDocument
+    public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
     {
-        private readonly SldWorks _swApp;
         private ModelDoc2 _swModel;
         private AssemblyDoc _swAssy;
         private int _errors;
         private int _warnings;
 
-        private static readonly CadLogger Logger = CadLogger.GetLogger(className: nameof(AssemblyDocument));
-
-        public AssemblyDocument()
-        {
-        }
-
-        public AssemblyDocument(SldWorks swApp)
-        {
-            _swApp = swApp;
-        }
+        private static readonly CadLogger Logger = CadLogger.GetLogger<AssemblyDocument>();
 
         public ModelDoc2 ActivateDoc(string filePath)
         {
-            _swModel = (ModelDoc2)_swApp.ActivateDoc3(filePath, false, (int)swRebuildOnActivation_e.swUserDecision,
+            _swModel = (ModelDoc2)swApp.ActivateDoc3(filePath, false, (int)swRebuildOnActivation_e.swUserDecision,
                 ref _errors);
             return _swModel;
         }
@@ -46,7 +35,7 @@ namespace CADShark.Common.SolidWorks
                 filePath.ToLower().EndsWith(".slddrw") ? DocumentType.Drawing :
                 throw new ArgumentException("Unknown file type");
 
-            _swModel = _swApp.OpenDoc6(filePath, (int)fileType, (int)options, configuration, ref _errors,
+            _swModel = swApp.OpenDoc6(filePath, (int)fileType, (int)options, configuration, ref _errors,
                 ref _warnings);
 
             if (_swModel != null)
@@ -66,7 +55,7 @@ namespace CADShark.Common.SolidWorks
 
         public Dictionary<string, Component2> GetDistinctPartComponents(ref object[] vComponents)
         {
-            var swModel = (ModelDoc2)_swApp.ActiveDoc;
+            var swModel = (ModelDoc2)swApp.ActiveDoc;
 
             if (swModel.GetType() != (int)swDocumentTypes_e.swDocASSEMBLY) return null;
 
@@ -92,27 +81,11 @@ namespace CADShark.Common.SolidWorks
             }
 
             return groupedComponents;
-
-            //foreach (Component2 component in vComponents)
-            //{
-            //    var path = component.GetPathName();
-
-            //    if (component.GetSuppression2() == (int)swComponentSuppressionState_e.swComponentSuppressed) continue;
-
-            //    swModel = (ModelDoc2)component.GetModelDoc2();
-
-            //    if (swModel.GetType() != (int)swDocumentTypes_e.swDocPART) continue;
-            //    listPath.Add(path);
-            //}
-
-            //var array = listPath.GroupBy(x => x.ToString()).Select(x => x.Key).ToArray();
-
-            //return array;
         }
 
         public string[] GetDistinctComponents()
         {
-            var swModel = (ModelDoc2)_swApp.ActiveDoc;
+            var swModel = (ModelDoc2)swApp.ActiveDoc;
             var listPath = new List<string>();
             string drawPath = null;
 
@@ -127,7 +100,6 @@ namespace CADShark.Common.SolidWorks
 
             foreach (Component2 component in vComponents)
             {
-                //Logger.Info($"GetPathName {component.GetPathName()}");
                 var path = component.GetPathName();
                 if (CheckExistDrawingFile(path, ref drawPath))
                     listPath.Add(drawPath);
@@ -140,13 +112,13 @@ namespace CADShark.Common.SolidWorks
 
         public bool CheckExistDrawingFile(string path, ref string drawPath)
         {
-            drawPath = Regex.Replace(path.ToUpper(), "SLDASM|SLDPRT", "SLDDRW");
+            drawPath = Path.ChangeExtension(path.ToUpper(), "SLDDRW");
             return File.Exists(drawPath);
         }
 
         public string[] GetDerivedConfig()
         {
-            var swModel = (ModelDoc2)_swApp.ActiveDoc;
+            var swModel = (ModelDoc2)swApp.ActiveDoc;
             var configList = new List<string>();
 
             var configNames = (string[])swModel.GetConfigurationNames();
@@ -170,14 +142,18 @@ namespace CADShark.Common.SolidWorks
             return configList.ToArray();
         }
 
-        public void SuppressUpdates(bool enable)
+        public void SuppressUpdates(bool enable, ModelDoc2 swModel)
         {
-            _swModel = (ModelDoc2)_swApp.ActiveDoc;
+            var swView = (ModelView)swModel.ActiveView;
 
-            var swView = (ModelView)_swModel.ActiveView;
-            swView.EnableGraphicsUpdate = enable;
-            _swModel.FeatureManager.EnableFeatureTree = enable;
-            _swModel.FeatureManager.EnableFeatureTreeWindow = enable;
+            var enableGraphicsUpdate = swView.EnableGraphicsUpdate = enable;
+            Logger.Debug($"EnableFeatureTree {enableGraphicsUpdate}");
+
+            var enableFeatureTree = swModel.FeatureManager.EnableFeatureTree = enable;
+            Logger.Debug($"EnableFeatureTree {enableFeatureTree}");
+
+            var enableFeatureTreeWindow = swModel.FeatureManager.EnableFeatureTreeWindow = enable;
+            Logger.Debug($"EnableFeatureTreeWindow {enableFeatureTreeWindow}");
         }
     }
 }
