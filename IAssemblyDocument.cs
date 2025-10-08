@@ -34,6 +34,6 @@ namespace CADShark.Common.SolidWorks
         bool CheckExistDrawingFile(string path, ref string drawPath);
         string[] GetDerivedConfig();
 
-        void SuppressUpdates(bool enable);
+        void SuppressUpdates(bool enable, ModelDoc2 model);
     }
 }
