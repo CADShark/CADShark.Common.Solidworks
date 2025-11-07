@@ -32,8 +32,10 @@ namespace CADShark.Common.SolidWorks
 
         string[] GetDistinctComponents();
         bool CheckExistDrawingFile(string path, ref string drawPath);
-        string[] GetDerivedConfig();
+        string[] GetDerivedConfig(ModelDoc2 swModel);
 
         void SuppressUpdates(bool enable, ModelDoc2 model);
+
+        public List<(string Path, string Config, int Count)> GetDistinctComponentsDxf();
     }
 }
