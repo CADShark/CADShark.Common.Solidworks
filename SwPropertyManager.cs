@@ -1,11 +1,11 @@
-﻿using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Forms;
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
 
 namespace CADShark.Common.SolidWorks
 {
-    public static class SwPropertyManager
+    public class SwPropertyManager
     {
         public static string GetProperty(ModelDoc2 model, string configName, string propName)
         {
@@ -72,9 +72,9 @@ namespace CADShark.Common.SolidWorks
 
             var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
-            //var res = propMgr.Set2(propName, newValue);
-            //if (res != (int)swCustomInfoSetResult_e.swCustomInfoSetResult_OK)
-            //    MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
+            if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+                MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
+            model.SetSaveFlag();
         }
 
         public static void SetProperty(ModelDoc2 model, string propName, string newValue, string configName = "")
@@ -83,17 +83,18 @@ namespace CADShark.Common.SolidWorks
 
             var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
-            //var res = propMgr.Set2(propName, newValue);
-            //if (res != (int)swCustomInfoSetResult_e.swCustomInfoSetResult_OK)
-            //    MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
+            if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+                MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
+            model.SetSaveFlag();
         }
 
         public static void SetProperty(CustomPropertyManager propMgr, string propName, string newValue, swCustomInfoType_e infoType)
         {
             var res = propMgr.Add3(propName, (int)infoType, newValue, (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-            //var res = propMgr.Set2(propName, newValue);
-            if (res != (int)swCustomInfoSetResult_e.swCustomInfoSetResult_OK)
+
+            if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
                 MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
+            //model.SetSaveFlag();
         }
     }
 }

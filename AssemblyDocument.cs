@@ -1,11 +1,11 @@
-﻿using CADShark.Common.Logging;
-using CADShark.Common.SolidWorks.Documents;
-using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+//using CADShark.Common.Logging;
+using CADShark.Common.SolidWorks.Documents;
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
 
 namespace CADShark.Common.SolidWorks;
 
@@ -16,7 +16,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
     private int _errors;
     private int _warnings;
 
-    private static readonly CadLogger Logger = CadLogger.GetLogger<AssemblyDocument>();
+    //private static readonly CadLogger Logger = CadLogger.GetLogger<AssemblyDocument>();
 
     public ModelDoc2 ActivateDoc(string filePath)
     {
@@ -46,7 +46,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
             return _swModel;
         }
 
-        Logger.Error($"Error to open document {filePath}. Error code: {_errors}");
+        //Logger.Error($"Error to open document {filePath}. Error code: {_errors}");
         return null;
     }
 
@@ -113,11 +113,11 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         _swAssy.ResolveAllLightWeightComponents(true);
 
         var vComponents = (object[])_swAssy.GetComponents(false);
-        if (vComponents == null || vComponents.Length == 0)
-        {
-            Logger.Info("Компоненты в сборке отсутствуют.");
-            return [];
-        }
+        //if (vComponents == null || vComponents.Length == 0)
+        //{
+        //    Logger.Info("Компоненты в сборке отсутствуют.");
+        //    return [];
+        //}
 
         var allComponents = new List<(string Path, string Config)>();
 
@@ -158,13 +158,13 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
             var swConfig = (Configuration)swModel.GetConfigurationByName(configName);
             if (swConfig == null)
             {
-                Logger.Error($"Error to get configuration by name: {configName}");
+                //Logger.Error($"Error to get configuration by name: {configName}");
             }
             else
             {
                 if (swConfig.IsDerived()) continue;
                 configList.Add(swConfig.Name);
-                Logger.Trace($"Config is not Derived: {swConfig.Name}");
+                //Logger.Trace($"Config is not Derived: {swConfig.Name}");
             }
         }
 
@@ -176,12 +176,12 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         var swView = (ModelView)swModel.ActiveView;
 
         var enableGraphicsUpdate = swView.EnableGraphicsUpdate = enable;
-        Logger.Debug($"EnableFeatureTree {enableGraphicsUpdate}");
+        //Logger.Debug($"EnableFeatureTree {enableGraphicsUpdate}");
 
         var enableFeatureTree = swModel.FeatureManager.EnableFeatureTree = enable;
-        Logger.Debug($"EnableFeatureTree {enableFeatureTree}");
+        //Logger.Debug($"EnableFeatureTree {enableFeatureTree}");
 
         var enableFeatureTreeWindow = swModel.FeatureManager.EnableFeatureTreeWindow = enable;
-        Logger.Debug($"EnableFeatureTreeWindow {enableFeatureTreeWindow}");
+        //Logger.Debug($"EnableFeatureTreeWindow {enableFeatureTreeWindow}");
     }
 }

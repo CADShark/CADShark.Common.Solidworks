@@ -1,9 +1,9 @@
-﻿using SolidWorks.Interop.sldworks;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using SolidWorks.Interop.sldworks;
 
 namespace CADShark.Common.SolidWorks.Core
 {

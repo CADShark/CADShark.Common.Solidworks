@@ -1,6 +1,6 @@
-﻿using CADShark.Common.SolidWorks.Documents;
+﻿using System.Collections.Generic;
+using CADShark.Common.SolidWorks.Documents;
 using SolidWorks.Interop.sldworks;
-using System.Collections.Generic;
 
 namespace CADShark.Common.SolidWorks
 {

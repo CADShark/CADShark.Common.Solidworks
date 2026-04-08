@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using SolidWorks.Interop.sldworks;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +6,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
+using SolidWorks.Interop.sldworks;
 using static System.String;
 
 namespace CADShark.Common.SolidWorks.Core
