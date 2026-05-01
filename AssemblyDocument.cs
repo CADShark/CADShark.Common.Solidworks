@@ -38,16 +38,13 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         _swModel = swApp.OpenDoc6(filePath, (int)fileType, (int)options, configuration, ref _errors,
             ref _warnings);
 
-        if (_swModel != null)
-        {
+        //if (_swModel != null)
             //Logger.Info($"Open document: {filePath}");
-            //if (_warnings != 0) Logger.Warning($"Warning to open document. Warning code: {_warnings}");
-
-            return _swModel;
-        }
+        //if (_warnings != 0) Logger.Warning($"Warning to open document. Warning code: {_warnings}");
+        return _swModel;
 
         //Logger.Error($"Error to open document {filePath}. Error code: {_errors}");
-        return null;
+        //return null;
     }
 
     public Dictionary<string, Component2> GetDistinctPartComponents(ref object[] vComponents)
@@ -58,7 +55,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
 
         var groupedComponents = new Dictionary<string, Component2>();
 
-        _swAssy = (AssemblyDoc)swModel;
+        _swAssy = swModel as AssemblyDoc;
         _swAssy.ResolveAllLightWeightComponents(true);
 
         vComponents = (object[])_swAssy.GetComponents(false);

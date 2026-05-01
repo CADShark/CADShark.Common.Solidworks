@@ -1,6 +1,5 @@
-﻿namespace CADShark.Common.SolidWorks.Core
+﻿namespace CADShark.Common.SolidWorks.Core;
+
+internal class Enums
 {
-    internal class Enums
-    {
-    }
 }
