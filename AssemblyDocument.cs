@@ -13,38 +13,40 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
 {
     private ModelDoc2 _swModel;
     private AssemblyDoc _swAssy;
-    private int _errors;
-    private int _warnings;
 
     //private static readonly CadLogger Logger = CadLogger.GetLogger<AssemblyDocument>();
 
-    public ModelDoc2 ActivateDoc(string filePath)
+    public ModelDoc2 ActivateDoc(string filePath, ref int errors)
     {
-        _swModel = (ModelDoc2)swApp.ActivateDoc3(filePath, false, (int)swRebuildOnActivation_e.swUserDecision,
-            ref _errors);
+        _swModel = (ModelDoc2)swApp.ActivateDoc3(
+            filePath, false,
+            (int)swRebuildOnActivation_e.swUserDecision,
+            ref errors);
         return _swModel;
     }
-
-    public ModelDoc2 OpenFile(string filePath, OpenDocumentOptions options = OpenDocumentOptions.None,
-        string configuration = null)
+    public ModelDoc2 OpenFile(string filePath, ref int errors, ref int warnings, OpenDocumentOptions options = OpenDocumentOptions.None, string configuration = null)
     {
-        // Get file type
         var fileType =
             filePath.ToLower().EndsWith(".sldprt") ? DocumentType.Part :
             filePath.ToLower().EndsWith(".sldasm") ? DocumentType.Assembly :
             filePath.ToLower().EndsWith(".slddrw") ? DocumentType.Drawing :
-            throw new ArgumentException("Unknown file type");
+            throw new ArgumentException($"Unknown file type: {filePath}");
 
-        _swModel = swApp.OpenDoc6(filePath, (int)fileType, (int)options, configuration, ref _errors,
-            ref _warnings);
+        var model = swApp.OpenDoc6(
+            filePath, (int)fileType, (int)options, configuration,
+            ref errors, ref warnings);
 
-        //if (_swModel != null)
-            //Logger.Info($"Open document: {filePath}");
-        //if (_warnings != 0) Logger.Warning($"Warning to open document. Warning code: {_warnings}");
-        return _swModel;
+        _swModel = model;
 
-        //Logger.Error($"Error to open document {filePath}. Error code: {_errors}");
-        //return null;
+        //if (model != null)
+        //    Logger.Info($"Opened document: {filePath}");
+        //else
+        //    Logger.Error($"Failed to open document: {filePath}. Error code: {_errors}");
+
+        //if (_warnings != 0)
+        //    Logger.Warning($"Warning opening document: {filePath}. Warning code: {_warnings}");
+        return _swModel; 
+        //return new OpenFileResult(model, _errors, _warnings);
     }
 
     public Dictionary<string, Component2> GetDistinctPartComponents(ref object[] vComponents)
@@ -63,12 +65,13 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         foreach (Component2 component in vComponents)
         {
             if (component.GetSuppression2() == (int)swComponentSuppressionState_e.swComponentSuppressed) continue;
+
             swModel = (ModelDoc2)component.GetModelDoc2();
             if (swModel?.GetType() != (int)swDocumentTypes_e.swDocPART) continue;
 
             var pathName = component.GetPathName();
-
-            if (!groupedComponents.ContainsKey(pathName)) groupedComponents[pathName] = component;
+            if (!groupedComponents.ContainsKey(pathName))
+                groupedComponents[pathName] = component;
         }
 
         return groupedComponents;
@@ -81,6 +84,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         string drawPath = null;
 
         if (swModel.GetType() != (int)swDocumentTypes_e.swDocASSEMBLY) return null;
+
         if (CheckExistDrawingFile(swModel.GetPathName(), ref drawPath))
             listPath.Add(drawPath);
 
@@ -96,9 +100,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
                 listPath.Add(drawPath);
         }
 
-        var array = listPath.GroupBy(x => x.ToString()).Select(x => x.Key).ToArray();
-
-        return array;
+        return listPath.GroupBy(x => x).Select(x => x.Key).ToArray();
     }
 
     public List<(string Path, string Config, int Count)> GetDistinctComponentsDxf()
@@ -110,11 +112,7 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         _swAssy.ResolveAllLightWeightComponents(true);
 
         var vComponents = (object[])_swAssy.GetComponents(false);
-        //if (vComponents == null || vComponents.Length == 0)
-        //{
-        //    Logger.Info("Компоненты в сборке отсутствуют.");
-        //    return [];
-        //}
+
 
         var allComponents = new List<(string Path, string Config)>();
 
@@ -122,20 +120,15 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
         {
             if (swComp.GetSuppression2() == (int)swComponentSuppressionState_e.swComponentSuppressed) continue;
 
-            var path = swComp.GetPathName();
-            var config = swComp.ReferencedConfiguration;
-
-            allComponents.Add((path, config));
+            allComponents.Add((swComp.GetPathName(), swComp.ReferencedConfiguration));
         }
 
-        var grouped = allComponents
+        return allComponents
             .GroupBy(c => new { c.Path, c.Config })
             .Select(g => (g.Key.Path, g.Key.Config, g.Count()))
             .OrderBy(g => g.Path)
             .ToList();
-        return grouped;
     }
-
 
     public bool CheckExistDrawingFile(string path, ref string drawPath)
     {
@@ -146,23 +139,20 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
     public string[] GetDerivedConfig(ModelDoc2 swModel)
     {
         var configList = new List<string>();
-
         var configNames = (string[])swModel.GetConfigurationNames();
 
-        for (var index = 0; index < configNames.Length; index++)
+        foreach (var configName in configNames)
         {
-            var configName = configNames[index];
             var swConfig = (Configuration)swModel.GetConfigurationByName(configName);
+
             if (swConfig == null)
-            {
                 //Logger.Error($"Error to get configuration by name: {configName}");
-            }
-            else
-            {
-                if (swConfig.IsDerived()) continue;
-                configList.Add(swConfig.Name);
-                //Logger.Trace($"Config is not Derived: {swConfig.Name}");
-            }
+                continue;
+
+            if (swConfig.IsDerived()) continue;
+
+            configList.Add(swConfig.Name);
+            //Logger.Trace($"Config is not derived: {swConfig.Name}");
         }
 
         return configList.ToArray();
@@ -172,13 +162,15 @@ public class AssemblyDocument(ISldWorks swApp) : IAssemblyDocument
     {
         var swView = (ModelView)swModel.ActiveView;
 
-        var enableGraphicsUpdate = swView.EnableGraphicsUpdate = enable;
-        //Logger.Debug($"EnableFeatureTree {enableGraphicsUpdate}");
+        swView.EnableGraphicsUpdate = enable;
+        //Logger.Debug($"EnableGraphicsUpdate: {enable}");
 
-        var enableFeatureTree = swModel.FeatureManager.EnableFeatureTree = enable;
-        //Logger.Debug($"EnableFeatureTree {enableFeatureTree}");
+        swModel.FeatureManager.EnableFeatureTree = enable;
+        //Logger.Debug($"EnableFeatureTree: {enable}");
 
-        var enableFeatureTreeWindow = swModel.FeatureManager.EnableFeatureTreeWindow = enable;
-        //Logger.Debug($"EnableFeatureTreeWindow {enableFeatureTreeWindow}");
+        swModel.FeatureManager.EnableFeatureTreeWindow = enable;
+        //Logger.Debug($"EnableFeatureTreeWindow: {enable}");
     }
+
+
 }
