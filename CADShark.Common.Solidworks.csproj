@@ -67,6 +67,7 @@
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Extension.cs" />
     <Compile Include="Core\ISldWorksInstManager.cs" />
+    <Compile Include="Core\PropertyMapping.cs" />
     <Compile Include="Core\SldWorksInstManager.cs" />
     <Compile Include="Core\YearE.cs" />
     <Compile Include="IAssemblyDocument.cs" />

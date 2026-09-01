@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
+using CADShark.Common.SolidWorks.Core;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
@@ -13,9 +14,7 @@ public class SwPropertyManager
 
         var res = propMgr.Get6(propName, false, out _, out var resolvedVal, out _, out _);
 
-        if (res != (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue) return "";
-        return resolvedVal;
-
+        return PropertyMapping.MapGetResult(res, resolvedVal);
     }
 
     public static string GetProperty(SldWorks swApp, string modelPath, string configName, string propName)
@@ -30,10 +29,7 @@ public class SwPropertyManager
 
         Debug.WriteLine(
             $"Get property status {res}");
-        if (res == (int)swCustomInfoGetResult_e.swCustomInfoGetResult_ResolvedValue)
-            return resolvedVal;
-
-        return "";
+        return PropertyMapping.MapGetResult(res, resolvedVal);
     }
 
     /// <summary>
@@ -73,7 +69,7 @@ public class SwPropertyManager
         var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue,
             (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!PropertyMapping.IsAddSuccessful(res))
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
         model.SetSaveFlag();
     }
@@ -85,7 +81,7 @@ public class SwPropertyManager
         var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue,
             (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!PropertyMapping.IsAddSuccessful(res))
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
         model.SetSaveFlag();
     }
@@ -96,7 +92,7 @@ public class SwPropertyManager
         var res = propMgr.Add3(propName, (int)infoType, newValue,
             (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
 
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!PropertyMapping.IsAddSuccessful(res))
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
         //model.SetSaveFlag();
     }
