@@ -5,6 +5,35 @@ using SolidWorks.Interop.swconst;
 
 namespace CADShark.Common.SolidWorks;
 
+public enum SwPropertyWriteStatus
+{
+    Success = 0,
+    DocumentNotOpen = 1,
+    AddFailed = 2
+}
+
+public sealed class SwPropertyWriteResult
+{
+    private SwPropertyWriteResult(SwPropertyWriteStatus status, int nativeResultCode)
+    {
+        Status = status;
+        NativeResultCode = nativeResultCode;
+    }
+
+    public SwPropertyWriteStatus Status { get; }
+    public int NativeResultCode { get; }
+    public bool Success => Status == SwPropertyWriteStatus.Success;
+
+    public static SwPropertyWriteResult Succeeded(int nativeResultCode) =>
+        new(SwPropertyWriteStatus.Success, nativeResultCode);
+
+    public static SwPropertyWriteResult DocumentNotOpen() =>
+        new(SwPropertyWriteStatus.DocumentNotOpen, 0);
+
+    public static SwPropertyWriteResult AddFailed(int nativeResultCode) =>
+        new(SwPropertyWriteStatus.AddFailed, nativeResultCode);
+}
+
 public class SwPropertyManager
 {
     public static string GetProperty(ModelDoc2 model, string configName, string propName)
@@ -34,6 +63,55 @@ public class SwPropertyManager
             return resolvedVal;
 
         return "";
+    }
+
+    public static SwPropertyWriteResult TrySetProperty(
+        SldWorks swApp,
+        string modelPath,
+        string propName,
+        string newValue,
+        string configName = "")
+    {
+        var model = (ModelDoc2)swApp.GetOpenDocumentByName(modelPath);
+        if (model == null)
+            return SwPropertyWriteResult.DocumentNotOpen();
+
+        return TrySetProperty(model, propName, newValue, configName);
+    }
+
+    public static SwPropertyWriteResult TrySetProperty(
+        ModelDoc2 model,
+        string propName,
+        string newValue,
+        string configName = "")
+    {
+        if (model == null)
+            return SwPropertyWriteResult.DocumentNotOpen();
+
+        var propMgr = model.Extension.CustomPropertyManager[configName];
+        var result = TrySetProperty(propMgr, propName, newValue, swCustomInfoType_e.swCustomInfoText);
+
+        if (result.Success)
+            model.SetSaveFlag();
+
+        return result;
+    }
+
+    public static SwPropertyWriteResult TrySetProperty(
+        CustomPropertyManager propMgr,
+        string propName,
+        string newValue,
+        swCustomInfoType_e infoType)
+    {
+        var res = propMgr.Add3(
+            propName,
+            (int)infoType,
+            newValue,
+            (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+
+        return res == (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged
+            ? SwPropertyWriteResult.Succeeded(res)
+            : SwPropertyWriteResult.AddFailed(res);
     }
 
     /// <summary>
@@ -66,38 +144,26 @@ public class SwPropertyManager
     public static void SetProperty(SldWorks swApp, string modelPath, string propName, string newValue,
         string configName = "")
     {
-        var model = (ModelDoc2)swApp.GetOpenDocumentByName(modelPath);
+        var result = TrySetProperty(swApp, modelPath, propName, newValue, configName);
 
-        var propMgr = model.Extension.CustomPropertyManager[configName];
-
-        var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue,
-            (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!result.Success)
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
-        model.SetSaveFlag();
     }
 
     public static void SetProperty(ModelDoc2 model, string propName, string newValue, string configName = "")
     {
-        var propMgr = model.Extension.CustomPropertyManager[configName];
+        var result = TrySetProperty(model, propName, newValue, configName);
 
-        var res = propMgr.Add3(propName, (int)swCustomInfoType_e.swCustomInfoText, newValue,
-            (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
-
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!result.Success)
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
-        model.SetSaveFlag();
     }
 
     public static void SetProperty(CustomPropertyManager propMgr, string propName, string newValue,
         swCustomInfoType_e infoType)
     {
-        var res = propMgr.Add3(propName, (int)infoType, newValue,
-            (int)swCustomPropertyAddOption_e.swCustomPropertyDeleteAndAdd);
+        var result = TrySetProperty(propMgr, propName, newValue, infoType);
 
-        if (res != (int)swCustomInfoAddResult_e.swCustomInfoAddResult_AddedOrChanged)
+        if (!result.Success)
             MessageBox.Show($@"Не удалось сохранить свойство '{propName}' = '{newValue}'");
-        //model.SetSaveFlag();
     }
 }
