@@ -91,8 +91,10 @@ public class SwPropertyManager
         var propMgr = model.Extension.CustomPropertyManager[configName];
         var result = TrySetProperty(propMgr, propName, newValue, swCustomInfoType_e.swCustomInfoText);
 
-        if (result.Success)
-            model.SetSaveFlag();
+        // Legacy SetProperty(ModelDoc2, ...) marked the model dirty after every attempted
+        // write, including a native Add3 failure. Preserve that observable behavior while
+        // exposing a non-UI result API to new consumers.
+        model.SetSaveFlag();
 
         return result;
     }
